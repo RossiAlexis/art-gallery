@@ -1,4 +1,5 @@
 import {
+	href,
 	isRouteErrorResponse,
 	Link,
 	Links,
@@ -47,7 +48,8 @@ export default function App() {
 				</span>
 				<nav>
 					<ul className="font-body text-text-primary flex gap-2 text-sm md:gap-4 md:text-base">
-						<Link to={''}>Login</Link>
+						<Link to={href('/login')}>Login</Link>
+						<Link to={href('/signup')}>Sign Up</Link>
 						{/* 	<li>Collecciones</li>
 						<li>Sobre Mi</li> */}
 					</ul>
