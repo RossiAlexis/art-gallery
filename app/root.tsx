@@ -1,4 +1,6 @@
 import {
+	data,
+	Form,
 	href,
 	isRouteErrorResponse,
 	Link,
@@ -11,6 +13,8 @@ import {
 
 import type { Route } from './+types/root'
 import './styles/index.css'
+import { getSession } from './utils/sessions.server'
+import { Button } from './components/ui/button'
 
 export const links: Route.LinksFunction = () => [
 	{ rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -39,7 +43,21 @@ export function Layout({ children }: { children: React.ReactNode }) {
 	)
 }
 
-export default function App() {
+export async function loader({ request }: Route.LoaderArgs) {
+	const session = await getSession(request.headers.get('Cookie'))
+
+	// if (session.has('userId')) {
+	// 	// The user is already login
+	// 	return redirect('/')
+	// }
+
+	return data({
+		isUserLoggedIn: session.has('userId'),
+	})
+}
+
+export default function App({ loaderData }: Route.ComponentProps) {
+	const { isUserLoggedIn } = loaderData
 	return (
 		<>
 			<header className="fixed flex h-14 w-full items-center justify-between bg-white px-4 md:px-16">
@@ -48,8 +66,23 @@ export default function App() {
 				</span>
 				<nav>
 					<ul className="font-body text-text-primary flex gap-2 text-sm md:gap-4 md:text-base">
-						<Link to={href('/login')}>Login</Link>
-						<Link to={href('/signup')}>Sign Up</Link>
+						{!isUserLoggedIn && (
+							<>
+								<Link to={href('/login')}>Login</Link>
+								<Link to={href('/signup')}>Sign Up</Link>
+							</>
+						)}
+						{isUserLoggedIn && (
+							<div className="flex items-center gap-4">
+								<Link to={href('/')}>Dashboard</Link>
+								<Link to={href('/signup')}>Admin</Link>
+								<Form action="/logout" method="POST">
+									<Button variant="link" type="submit">
+										Log Out
+									</Button>
+								</Form>
+							</div>
+						)}
 						{/* 	<li>Collecciones</li>
 						<li>Sobre Mi</li> */}
 					</ul>

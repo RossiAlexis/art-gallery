@@ -13,7 +13,7 @@ const signupSchema = z.object({
 })
 export async function action({ request }: Route.ActionArgs) {
 	const data = Object.fromEntries(await request.formData())
-	console.log('Data', data)
+
 	const schemaValidation = signupSchema.safeParse(data)
 
 	if (!schemaValidation.success) {
@@ -36,6 +36,7 @@ export async function action({ request }: Route.ActionArgs) {
 		data: {
 			email,
 			password: encryptedPassword,
+			username: email.slice(0, email.indexOf('@')),
 		},
 	})
 
@@ -56,11 +57,16 @@ export default function SignUp() {
 					<Label htmlFor="email" className="py-1">
 						Email
 					</Label>
-					<Input id="email" name='email' placeholder="Email" />
+					<Input id="email" name="email" placeholder="Email" />
 				</div>
 				<div className="flex min-w-64 flex-col gap-1">
 					<Label htmlFor="password">Password</Label>
-					<Input type="password" id="password" name='password' placeholder="Password" />
+					<Input
+						type="password"
+						id="password"
+						name="password"
+						placeholder="Password"
+					/>
 				</div>
 				<Button type="submit">Submit</Button>
 			</Form>

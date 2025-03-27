@@ -52,7 +52,7 @@ export async function action({ request }: Route.ActionArgs) {
 
 	session.set('userId', user.id)
 
-	return redirect('/', {
+	return redirect(`/artist/${user.username.toLocaleLowerCase()}`, {
 		headers: {
 			'Set-Cookie': await commitSession(session),
 		},

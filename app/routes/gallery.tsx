@@ -1,5 +1,19 @@
-import { href, NavLink } from 'react-router'
+import { href, NavLink, redirect } from 'react-router'
+import type { Route } from './+types/gallery'
+import { getSession } from '~/utils/sessions.server'
 
+export async function loader({ request }: Route.LoaderArgs) {
+	const session = await getSession(request.headers.get('Cookie'))
+
+	if (!session.has('userId')) {
+		// The user is already login
+		return redirect('/login')
+	}
+
+	return {
+		status: 200,
+	}
+}
 export default function Gallery() {
 	const obras = [
 		{
